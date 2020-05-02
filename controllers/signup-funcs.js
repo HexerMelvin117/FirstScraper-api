@@ -3,25 +3,26 @@ const dbconfig = require('./dbconfig')
 
 const pool = dbconfig.pool
 
-const addUser = (email, name, hashedPassword) => {
-    pool.query(`INSERT INTO users (user_name, user_email, user_password)
-                VALUES ($1, $2, $3) RETURING user_id, user_password`,
+const addUser = async (email, name, hashedPassword) => {
+    console.log(email, name, hashedPassword)
+    await pool.query(`INSERT INTO users (user_name, user_email, user_password)
+                VALUES ($1, $2, $3)`,
                 [name, email, hashedPassword])
 }
 
 const checkRegistrationFields = ({email, name, password, confirmPassword}) => {
-    if (!email || !password || !name || !confirmPassword
-            && password !== confirmPassword) {
+    if (!email || !password || !name || !confirmPassword) {
         return false
     }
+    if (password !== confirmPassword) return false
     return true
 }
 
-const submitUserInfo = (userInfo) => {
+const submitUserInfo = async (userInfo) => {
     const { email, name, password } = userInfo
-    let hashedPassword = bcrypt.hash(password, 10)
+    let hashedPassword = await bcrypt.hash(password, 10)
 
-    addUser(email, name, hashedPassword)
+    await addUser(email, name, hashedPassword)
 }
 
 module.exports = {

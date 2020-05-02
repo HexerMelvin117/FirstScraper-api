@@ -1,17 +1,21 @@
 const app = module.exports = require('express')()
 const signupFuncs = require('../controllers/signup-funcs')
 
-app.post('/signup', (req, res) => {
+app.post('/signup', async (req, res) => {
     try {
         user = req.body
         let validUser = signupFuncs.checkRegistrationFields(user)
 
         if (validUser === true) {
-            signupFuncs.submitUserInfo(user)
+            await signupFuncs.submitUserInfo(user)
             res.json({message: "user succesfully created"})
         }
         res.json({message: "User could not be created"})
     } catch (error) {
         res.json({message: error})
     }
+})
+
+app.get('/test', (req, res) => {
+    res.json({message: "yo"})
 })
