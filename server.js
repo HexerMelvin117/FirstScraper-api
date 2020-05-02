@@ -2,8 +2,10 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const scrapingRoutes = require('./routes/scraping-routes')
+const authRoutes = require('./routes/auth-routes')
 
-app.use(scrapingRoutes)
+app.use('/auth', authRoutes)
+app.use('/scrape', scrapingRoutes)
 app.use(cors())
 app.use(express.json())
 
