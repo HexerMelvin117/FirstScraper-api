@@ -1,5 +1,6 @@
 const app = module.exports = require('express')()
 const signupFuncs = require('../controllers/signup-funcs')
+const loginFuncs = require('../controllers/login-funcs')
 
 app.post('/signup', async (req, res) => {
     try {
@@ -12,6 +13,7 @@ app.post('/signup', async (req, res) => {
             res.json({message: "user succesfully created"})
         }
 
+        // Error management
         if (repeatedEmail === true) {
             res.json({message: "email already in use"})
         } else {
@@ -22,6 +24,13 @@ app.post('/signup', async (req, res) => {
     }
 })
 
-app.get('/test', (req, res) => {
-    res.json({message: "yo"})
+app.post('/login', async (req, res) => {
+    try {
+        let user = req.body
+        const response = await loginFuncs.searchUser(user)
+        res.json(response)
+    } catch (error) {
+        res.json({message: error})
+    }
 })
+
