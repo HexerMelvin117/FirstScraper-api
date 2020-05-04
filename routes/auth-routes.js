@@ -10,9 +10,6 @@ require("dotenv").config();
 
 initialize(passport)
 app.use(cookieParser())
-app.use(passport.initialize())
-app.use(passport.session())
-
 
 app.use(
     session({
@@ -21,6 +18,9 @@ app.use(
       saveUninitialized: false
     })
 );
+
+app.use(passport.initialize())
+app.use(passport.session())
 
 app.use(flash());
 
@@ -46,11 +46,15 @@ app.post('/signup', async (req, res) => {
     }
 })
 
-app.get('/login', (req, res) => {
-    if (req.isAuthenticated()) {
-        res.json({message: "you are already logged in."})
+app.get('/login', (req, res, next) => {
+    if (req.session.user !== undefined) {
+        next();
+        console.log(req.session.passport)
+    } else {
+        res.redirect("/login");
+        console.log(req.session.passport)
+        console.log(req.user)
     }
-    res.json({message: "going"})
 })
 
 app.post('/login', passport.authenticate('local', {

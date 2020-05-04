@@ -31,13 +31,15 @@ function initialize(passport) {
     passport.serializeUser((user, done) => {
         done(null, user.user_id)
     })
-    passport.deserializeUser(async (user, done) => {
-        try {
-            console.log(user)
-            const result = await pool.query(`SELECT * FROM users WHERE user_id = $1`, [user.user_id])
-            return done(null, result.rows[0].user_id)
-        } catch (error) {
-            throw done(error)
+    passport.deserializeUser((id, done) => {
+        UserDeserialize()
+        async function UserDeserialize() {
+            try {
+                const result = await pool.query(`SELECT * FROM users WHERE user_id = $1`, [id])
+                done(null, result.rows[0])
+            } catch (error) {
+                throw done(error)
+            }
         }
     })
 }
