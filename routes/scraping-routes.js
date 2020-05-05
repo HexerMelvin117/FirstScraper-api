@@ -1,8 +1,30 @@
 const app = module.exports = require('express')()
 const scraperFuncs = require('../controllers/scraper-funcs')
+const { saveToDatabase } = require('../controllers/saveproduct')
 
 // Gets specific amazon product information
-app.get('/amazonproduct', async (req, res) => {
+app.post('/amazonproduct', async (req, res) => {
     let amzDetails = await scraperFuncs.getAmazonDetails(req.body.productLink)
     res.json(amzDetails)
 })
+
+let storeProductInDatabase = async (req, userId) => {
+    try {
+        let product = req.body
+        let { productUrl, productTitle, productImage, productValue } = product
+        await saveToDatabase(userId, productUrl, productTitle, productImage, productValue)
+    } catch (error) {
+        throw error
+    }
+}
+
+app.post('/saveproduct', async (req, res) => {
+    if (req.isAuthenticated() !== false) {
+        let userId = req.session.passport.user
+        await storeProductInDatabase(req, userId)
+        res.json({message: "product stored in database"})
+    } else {
+        res.json({message:"an error has ocurred"})
+    }
+})
+

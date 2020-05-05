@@ -47,13 +47,15 @@ app.post('/signup', async (req, res) => {
 })
 
 app.get('/login', (req, res, next) => {
-    if (req.session.user !== undefined) {
-        next();
-        console.log(req.session.passport)
+    if (req.isAuthenticated() !== false) {
+        // next();
+        res.json({message: "we made it!"})
+        // console.log(req.session.passport)
     } else {
         res.redirect("/login");
-        console.log(req.session.passport)
-        console.log(req.user)
+        // console.log(req.session.passport)
+        // console.log(req.user)
+        // console.log(req.isAuthenticated())
     }
 })
 
