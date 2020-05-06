@@ -5,6 +5,12 @@ const saveToDatabase = async (userId, productUrl, productTitle, productImage, pr
                     VALUES ($1, $2, $3, $4, $5)`, [productUrl, productTitle, productImage, productValue, userId])
 }
 
+const getSavedProducts = async (userId) => {
+    let response = await pool.query(`SELECT FROM savedproducts WHERE user_id = $1`, [userId])
+    return response
+}
+
 module.exports = {
-    saveToDatabase
+    saveToDatabase,
+    getSavedProducts
 }
