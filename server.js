@@ -3,6 +3,7 @@ const app = express()
 const cors = require('cors')
 const scrapingRoutes = require('./routes/scraping-routes')
 const authRoutes = require('./routes/auth-routes')
+const cookieParser = require('cookie-parser')
 
 app.use(cors())
 app.use(express.json())
