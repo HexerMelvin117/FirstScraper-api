@@ -1,6 +1,6 @@
 const app = module.exports = require('express')()
 const scraperFuncs = require('../controllers/scraper-funcs')
-const { saveToDatabase, getSavedProducts } = require('../controllers/productManagement')
+const { getSavedProducts } = require('../controllers/productManagement')
 
 // Gets specific amazon product information
 app.post('/amazonproduct', async (req, res) => {
