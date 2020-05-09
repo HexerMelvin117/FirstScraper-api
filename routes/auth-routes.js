@@ -1,13 +1,11 @@
 const app = module.exports = require('express')()
 const signupFuncs = require('../controllers/signup-funcs')
-const loginFuncs = require('../controllers/login-funcs')
 const passport = require('passport')
 const { initialize } = require('../controllers/passportconfig')
 const flash = require("express-flash");
-const session = require("express-session");
 const cookieParser = require('cookie-parser')
-const cookieSession = require('cookie-session')
 const jwt = require('jsonwebtoken')
+const { saveToDatabase, getSavedProducts, removeSavedProduct } = require('../controllers/productManagement')
 const JWTstrategy = require('passport-jwt').Strategy
 const ExtractJWT = require('passport-jwt').ExtractJwt
 require("dotenv").config();
@@ -105,15 +103,37 @@ let storeProductInDatabase = async (req, userId) => {
     }
 }
 
+// Saves the product to the database
 app.post('/saveproduct', async (req, res) => {
-    if (req.isAuthenticated() !== false) {
-        console.log(req.isAuthenticated())
+    checkAuth(req, res)
+    console.log(req.user)
+    let userId = req.user.user_id
+    await storeProductInDatabase(req, Number(userId))
+})
+
+// Gets all products associated with an account
+app.post('/allproducts', async (req, res) => {
+    try {
+        checkAuth(req, res)
         let userId = req.user.user_id
-        console.log(userId)
-        await storeProductInDatabase(req, Number(userId))
-        res.json({message: "product stored in database"})
-    } else {
-        res.json({message:"an error has ocurred"})
+        let response = await getSavedProducts(userId)
+        res.json(response.rows)
+    } catch (error) {
+        throw error;
+    }
+    
+})
+
+// Removes saved product from database
+app.post('/removeproduct', async (req, res) => {
+    try {   
+        checkAuth(req, res)
+        let userId = req.user.user_id
+        let productTitle = req.body.productTitle
+        await removeSavedProduct(userId, productTitle)
+        res.json({message: "product removed succesfully"})
+    } catch (error) {
+        throw error;
     }
 })
 
