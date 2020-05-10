@@ -10,8 +10,13 @@ const getSavedProducts = async (userId) => {
     return response
 }
 
-const removeSavedProduct = async (userId, productTitle) => {
-    let response = await pool.query(`DELETE FROM savedproducts WHERE prod_title=$1 AND user_id=$2` [productTitle, userId])
+const removeSavedProduct = async (userId, productId) => {
+    try {
+        let response = await pool.query(`DELETE FROM savedproducts WHERE prod_id=$1 AND user_id=$2`, [productId, userId])
+        return response
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 module.exports = {
