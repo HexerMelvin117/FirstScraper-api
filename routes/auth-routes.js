@@ -129,8 +129,8 @@ app.post('/removeproduct', async (req, res) => {
     try {   
         checkAuth(req, res)
         let userId = req.user.user_id
-        let productTitle = req.body.productTitle
-        await removeSavedProduct(userId, productTitle)
+        let productId = req.body.productId
+        await removeSavedProduct(Number(userId), Number(productId))
         res.json({message: "product removed succesfully"})
     } catch (error) {
         throw error;
