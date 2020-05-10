@@ -6,6 +6,7 @@ const authRoutes = require('./routes/auth-routes')
 const cookieParser = require('cookie-parser')
 const port = process.env.PORT || 8080
 
+app.use(express.static())
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }));
